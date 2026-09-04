@@ -1,6 +1,7 @@
 package com.cartshare.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +32,9 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsService userDetailsService;
 
+    @Value("${app.cors.allowed-origins:http://localhost:5173}")
+    private String allowedOriginsProperty;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -53,7 +57,16 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:3000", "http://127.0.0.1:8081", "http://127.0.0.1:5173"));
+
+        // Local dev origins always allowed, plus whatever ALLOWED_ORIGINS
+        // env var is set to in production (your deployed Vercel URL, etc.)
+        List<String> origins = new java.util.ArrayList<>(List.of(
+                "http://localhost:3000", "http://localhost:5173",
+                "http://127.0.0.1:3000", "http://127.0.0.1:8081", "http://127.0.0.1:5173"
+        ));
+        origins.addAll(Arrays.asList(allowedOriginsProperty.split(",")));
+        configuration.setAllowedOrigins(origins.stream().map(String::trim).distinct().toList());
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);

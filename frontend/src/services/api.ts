@@ -2,7 +2,9 @@ import axios from 'axios';
 import { authService } from './authService';
 
 const api = axios.create({
-baseURL: 'http://localhost:8081/api',
+  // VITE_API_URL is set in .env.local for dev, and as a real env var on
+  // Vercel for production. Falls back to local dev if unset.
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8081/api',
   headers: {
     'Content-Type': 'application/json',
   },
