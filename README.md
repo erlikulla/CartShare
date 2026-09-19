@@ -2,6 +2,8 @@
 
 A collaborative grocery list app for shared households. Roommates join a household with an invite code, add items to a shared list, claim items to buy, mark them purchased with a price, and see who owes whom based on what everyone spent.
 
+**Live demo:** [cart-share-kappa.vercel.app](https://cart-share-kappa.vercel.app) Note: the backend runs on a free tier that sleeps after inactivity — first load may take 30-50s to wake up.
+
 **Stack:** React + TypeScript (Vite, Tailwind, MUI) on the frontend, Java + Spring Boot on the backend, PostgreSQL for storage, JWT for auth.
 
 ## Why this project
